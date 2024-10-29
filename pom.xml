@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>mag</groupId>
-	<artifactId>ej06</artifactId>
+	<artifactId>bookAdvisor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ej06</name>
-	<description>Ejercicio 6 de la tarea 3</description>
+	<name>bookAdvisor</name>
+	<description>Proyecto BookAvisor</description>
 	<url/>
 	<licenses>
 		<license/>

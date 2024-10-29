@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <!-- Header con fragmentación -->
+    <head th:insert="fragments/header :: header"></head>
+
+    <body>
+        <!-- Navar con fragmentación-->
+        <div th:insert="fragments/header :: navbar"></div>
+
+        <!-- Quienes Somos -->
+        <section id="quienesSomos" class="container">
+            <h2 class="titulo">Quienes Somos</h2>
+            <article class="cabecera">
+
+                <img
+                    src="images/logo.png"
+                    alt="Logo"
+                    height="300px" />
+                <div>
+                    <p>
+                        BookAdvisor y se trata de un catálogo de libros
+                        donde los usuarios,
+                        además de hacer consultas varias sobre el catálogo,
+                        podrán puntuar los
+                        libros y hacer comentarios sobre los mismos. Podrán
+                        hacer también
+                        búsquedas por distintos criterios y obtener rankings
+                        en función de las
+                        puntuaciones de todos los usuarios (algo similar a
+                        TripAdvisor).
+                    </p>
+
+                </div>
+
+            </article>
+
+            <footer>&copy;
+                <span th:text="${year}">3000</span>
+                - Mercedes Amor
+            </footer>
+        </body>
+    </html>

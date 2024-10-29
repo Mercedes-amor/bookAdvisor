@@ -4,11 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Ej05Application {
+public class BookAdvisorApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Ej05Application.class, args);
-		System.out.println("Hola mundo ejercicio 3.6");
+		SpringApplication.run(BookAdvisorApplication.class, args);
+		System.out.println("Hola mundo BookAdvisor");
 		
 	}
 

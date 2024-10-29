@@ -1,0 +1,96 @@
+html,
+body {
+    height: 100%;
+    margin: 5px 15px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+}
+
+
+
+/* Estilo del navbar */
+nav {
+    background-color:  #0a5454;
+    padding: 10px;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 15px;
+}
+
+nav ul li a {
+    color: rgb(255, 239, 185);
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/*HOME*/
+
+section {
+    margin: 10px;
+
+}
+
+#home {
+    align-items: center;
+}
+.cabecera {
+    display: flex;
+}
+
+.titulo {
+
+    color: rgb(56, 19, 19);
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 40px;
+}
+
+img {
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+}
+
+/* Estilos del footer */
+footer {
+    background-color: #0a5454;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+
+
+}
+
+footer span {
+    color: white;
+    font-size: 20px;
+
+}

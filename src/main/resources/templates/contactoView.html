@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <!-- Header con fragmentación -->
+  <head th:insert="fragments/header :: header"></head>
+
+  <body>
+    <!-- Navar con fragmentación-->
+    <div th:insert="fragments/header :: navbar"></div>
+
+    <!-- Formulario -->
+    <section id="formulario" class="container">
+      <main>
+        <article>
+          <div class="formContainer">
+            <h2 class="titulo" id="centrado">Contacto</h2>
+
+            <form
+              action="#"
+              th:action="@{/contacto}"
+              method="post"
+              th:object="${formInfo}"
+              enctype="multipart/form-data"
+            >
+              <div class="divForm">
+                <!-- Nombre -->
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  th:field="*{nombre}"
+                />
+                <!-- Mensaje error -->
+                <p
+                  th:if="${#fields.hasErrors('nombre')}"
+                  th:errors="*{nombre}"
+                  style="color: red"
+                ></p>
+
+                <!-- email -->
+                <label for="email" class="form-label">Email:</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  th:field="*{email}"
+                />
+                <!-- Mensaje error -->
+                <p
+                  th:if="${#fields.hasErrors('email')}"
+                  th:errors="*{email}"
+                  style="color: red"
+                ></p>
+
+                <!-- <Tipo de contacto /> -->
+                <label for="tipoContacto" class="form-label"
+                  >Tipo de producto:</label
+                >
+                <select
+                  class="form-select"
+                  id="tipoContacto"
+                  name="tipoContacto"
+                  th:field="*{tipoContacto}"
+                >
+                  <option
+                    th:each="producto : ${T(mag.ej05.TipoContacto).values()}"
+                    th:value="${producto}"
+                    th:text="${producto}"
+                  ></option>
+                </select>
+
+                <!-- Mensaje error -->
+                <p
+                  th:if="${#fields.hasErrors('tipoContacto')}"
+                  th:errors="*{tipoContacto}"
+                  style="color: red"
+                ></p>
+
+                <!-- Comentarios -->
+                <label for="comentario" class="form-label">Comentarios:</label>
+                <textarea
+                  type="text"
+                  rows="10"
+                  cols="40"
+                  id="comentario"
+                  name="comentario"
+                  th:field="*{comentario}"
+                ></textarea>
+                <!-- Mensaje error -->
+                <p
+                  th:if="${#fields.hasErrors('nombre')}"
+                  th:errors="*{nombre}"
+                  style="color: red"
+                ></p>
+
+                <!-- Aceptar condiciones -->
+                <div class="subDivForm">
+                  <label for="condiciones" class="form-label"
+                    >Acepta condiciones</label
+                  >
+                  <input
+                    type="checkbox"
+                    id="condiciones"
+                    name="condiciones"
+                    th:field="*{condiciones}"
+                  />
+                </div>
+                <!-- Mensaje error -->
+                <p
+                  th:if="${#fields.hasErrors('condiciones')}"
+                  th:errors="*{condiciones}"
+                  style="color: red"
+                ></p>
+
+                <!-- <Mensaje formulario enviado /> -->
+                <span
+                  th:if="${formularioEnviado}"
+                  style="color: rgb(17, 92, 10)"
+                >
+                  <p th:text="${formularioEnviado}">
+                    Formulario enviado correctamente
+                  </p>
+                </span>
+
+                <div class="subDivForm">
+                  <button type="submit">Enviar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </article>
+      </main>
+    </section>
+
+    <footer>&copy; Mercedes Amor Gallart</footer>
+  </body>
+</html>

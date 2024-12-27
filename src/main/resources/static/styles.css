@@ -45,7 +45,7 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    text-decoration: underline;
+    color: #579292;
 }
 
 /*HOME*/
@@ -75,6 +75,43 @@ img {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 
 }
+/*FORMULARIO*/
+
+ form{
+    display: flex;
+    flex-direction: row; 
+    justify-content: center;
+    align-items: center;
+}
+
+#centrado {
+    text-align: center;
+}
+
+.divForm{
+    display: flex;
+    padding: 16px 16px;
+    margin: 6px;
+    flex-direction: column;
+}
+
+.subDivForm{
+    margin: 15px 0px;
+}
+
+.subDivForm button {
+    background-color: #0a5454;
+    color: azure;
+    padding: 10px 15px;
+    border-radius: 9px;
+
+}
+
+button:hover {
+    background-color: #579292;
+    transition: all 0.5s;
+
+} 
 
 /* Estilos del footer */
 footer {

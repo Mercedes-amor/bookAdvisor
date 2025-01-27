@@ -9,7 +9,8 @@ public class BookAdvisorApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BookAdvisorApplication.class, args);
 		System.out.println("Hola mundo BookAdvisor");
-		
+
 	}
 
+	
 }

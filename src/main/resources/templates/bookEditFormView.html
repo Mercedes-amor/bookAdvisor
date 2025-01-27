@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <!-- Header con fragmentación -->
+  <head th:insert="~{fragments/header :: header}"></head>
+
+  <body>
+    <!-- Navbar con fragmentación-->
+    <div th:insert="~{fragments/header :: navbar}"></div>
+
+    <!-- Formulario -->
+    <section id="formulario" class="container">
+      <main>
+        <article>
+          <div class="formContainer">
+            <h2 class="titulo" id="centrado">Nuevo Libro</h2>
+
+            <form
+              method="post"
+              th:action="@{/libros/edit/submit}"
+              th:object="${libroForm}"
+              class="card p-4 shadow"
+            >
+              <div class="mb-3">
+                <label for="id" class="form-label">Id:</label>
+                <input
+                  readonly
+                  type="text"
+                  id="id"
+                  th:field="*{id}"
+                  class="form-control"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="titulo" class="form-label">Título:</label>
+                <input
+                  type="text"
+                  id="titulo"
+                  th:field="*{titulo}"
+                  class="form-control"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="date" class="form-label">Año:</label>
+                <input
+                  type="text"
+                  id="year"
+                  th:field="*{year}"
+                  class="form-control"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="autor" class="form-label">Autor:</label>
+                <input
+                  type="text"
+                  id="autor"
+                  th:field="*{autor}"
+                  class="form-control"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="sinopsis" class="form-label">Sinopsis:</label>
+                <input
+                  type="text"
+                  id="sinopsis"
+                  th:field="*{sinopsis}"
+                  class="form-control"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Idioma:</label>
+                <select class="form-select" name="idioma" th:field="*{idioma}">
+                  <option value="" selected disabled>
+                    Seleccione un idioma
+                  </option>
+                  <option
+                    th:each="idioma : ${T(mag.ej05.domain.Idioma).values()}"
+                    th:value="${idioma}"
+                    th:text="${idioma}"
+                  ></option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Género:</label>
+                <select class="form-select" name="genero" th:field="*{genero}">
+                  <option value="" selected disabled>
+                    Seleccione un género
+                  </option>
+                  <option
+                    th:each="genero : ${T(mag.ej05.domain.Genero).values()}"
+                    th:value="${genero}"
+                    th:text="${genero}"
+                  ></option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+          </div>
+        </article>
+      </main>
+    </section>
+
+    <div th:if="${textErr != null}" class="alert alert-warning" role="alert">
+      <p th:text="${textErr}">Texto de error</p>
+    </div>
+
+    <footer>&copy; Mercedes Amor Gallart</footer>
+  </body>
+</html>

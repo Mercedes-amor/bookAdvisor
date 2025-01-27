@@ -84,6 +84,35 @@ img {
     align-items: center;
 }
 
+.buscador {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Espaciado entre los elementos dentro del formulario */
+    margin: 10px 0; /* Espaciado arriba y abajo */
+    padding: 10px;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten en pantallas pequeñas */
+}
+
+.buscador label {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.buscador input[type="text"] {
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.buscador select {
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
 #centrado {
     text-align: center;
 }

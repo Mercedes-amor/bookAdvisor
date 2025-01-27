@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <!-- Header con fragmentación -->
+  <head th:insert="~{fragments/header :: header}"></head>
+
+  <body>
+    <!-- Navbar con fragmentación-->
+    <div th:insert="~{fragments/header :: navbar}"></div>
+
+    <!-- Catálogo Libros -->
+    <section id="libros" class="container">
+      <h2 class="titulo">Catálogo de libros</h2>
+      <article class="cabecera">
+        <div class="container mt-5">
+
+          <!-- FORMULARIO BÚSQUEDA -->
+          <form
+            method="post"
+            action="#"
+            th:action="@{/findByTitle}"
+            class="buscador"
+          >
+            <label
+              >Buscar por nombre:
+              <input type="text" name="busqueda" th:value="${busqueda}" />
+            </label>
+            <input type="submit" value="Buscar" class="btn btn-primary" />
+          </form>
+
+          <!-- BÚSQUEDA POR GÉNERO -->
+          <div class="buscador">
+            <label>Buscar por género:</label>
+            <select id="genero" onChange="changeGenero();" class="mb-3">
+              <option value="">Todos</option>
+              <option
+                th:each="gen : ${T(mag.ej05.domain.Genero).values()}"
+                th:value="${gen}"
+                th:text="${gen}"
+                th:selected="${gen.name() == generoSeleccionado?.name()}"
+              ></option>
+            </select>
+          </div>
+
+          <script>
+            function changeGenero() {
+              const select = document.getElementById("genero");
+              if (select.value == "") window.location.href = "/";
+              else window.location.href = "/findByGenero/" + select.value;
+            }
+          </script>
+
+          <br />
+
+          <!-- RESETAR BÚSQUEDA -->
+          <form method="get" action="#" th:action="@{/libros}">
+            <input type="submit" value="Resetear" class="btn btn-success" />
+          </form>
+          <br />
+
+          <!-- Tabla de Libros -->
+          <table class="table table-bordered mt-4">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <!-- <th>Portada</th> -->
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Sinopsis</th>
+                <th>Idioma</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Ejemplo de fila para un libro -->
+              <tr th:each="libro: ${listaLibros}">
+                <td th:text="${libro.id}"></td>
+                <td>
+                  <a
+                    th:href="@{/listone/{id}(id=${libro.id})}"
+                    th:text="${libro.titulo}"
+                    >titulo</a
+                  >
+                </td>
+                <td th:text="${libro.autor}"></td>
+                <td th:text="${libro.sinopsis}"></td>
+                <td th:text="${libro.genero}"></td>
+                <td>
+                  <!-- Botones para editar y borrar -->
+                  <a
+                    th:href="@{/libros/edit/{id}(id=${libro.id})}"
+                    class="btn btn-warning btn-sm"
+                    >Editar</a
+                  >
+                  <a
+                    th:href="@{/libros/delete/{id}(id=${libro.id})}"
+                    class="btn btn-danger btn-sm"
+                    onclick="return confirm('¿Estás seguro de que deseas eliminar este libro?')"
+                    >Borrar</a
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Botón para añadir un nuevo libro -->
+          <div class="text-center mt-4">
+            <a href="/libros/addBook" class="btn btn-primary btn-lg"
+              >Añadir Libro</a
+            >
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <footer>&copy; <span th:text="${year}">3000</span> - Mercedes Amor</footer>
+  </body>
+</html>

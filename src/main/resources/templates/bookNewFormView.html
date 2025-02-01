@@ -20,7 +20,7 @@
               th:object="${libro}"
               class="card p-4 shadow"
             >
-              <div class="mb-3">
+              <div class="divForm">
                 <label for="id" class="form-label">Id:</label>
                 <input
                   type="text"
@@ -29,7 +29,7 @@
                   class="form-control"
                 />
               </div>
-              <div class="mb-3">
+              <div class="divForm">
                 <label for="titulo" class="form-label">Título:</label>
                 <input
                   type="text"
@@ -38,7 +38,7 @@
                   class="form-control"
                 />
               </div>
-              <div class="mb-3">
+              <div class="divForm">
                 <label for="date" class="form-label">Año:</label>
                 <input
                   type="text"
@@ -47,7 +47,7 @@
                   class="form-control"
                 />
               </div>
-              <div class="mb-3">
+              <div class="divForm">
                 <label for="autor" class="form-label">Autor:</label>
                 <input
                   type="text"
@@ -56,7 +56,7 @@
                   class="form-control"
                 />
               </div>
-              <div class="mb-3">
+              <div class="divForm">
                 <label for="sinopsis" class="form-label">Sinopsis:</label>
                 <input
                   type="text"
@@ -66,7 +66,7 @@
                 />
               </div>
 
-              <div class="mb-3">
+              <div class="divForm">
                 <label class="form-label">Idioma:</label>
                 <select class="form-select" name="idioma" th:field="*{idioma}">
                   <option value="" selected disabled>
@@ -80,7 +80,7 @@
                 </select>
               </div>
 
-              <div class="mb-3">
+              <div class="divForm">
                 <label class="form-label">Género:</label>
                 <select class="form-select" name="genero" th:field="*{genero}">
                   <option value="" selected disabled>

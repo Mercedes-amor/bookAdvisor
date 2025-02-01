@@ -84,6 +84,20 @@ img {
     align-items: center;
 }
 
+
+.divForm{
+    display: flex;
+    padding: 16px 16px;
+    margin: 6px;
+    flex-direction: column;
+    width: 65%;
+}
+
+.subDivForm{
+    margin: 15px 0px;
+}
+
+/* BUSCADOR */
 .buscador {
     display: flex;
     justify-content: center;
@@ -117,16 +131,6 @@ img {
     text-align: center;
 }
 
-.divForm{
-    display: flex;
-    padding: 16px 16px;
-    margin: 6px;
-    flex-direction: column;
-}
-
-.subDivForm{
-    margin: 15px 0px;
-}
 
 .subDivForm button {
     background-color: #0a5454;
@@ -136,13 +140,18 @@ img {
 
 }
 
+/* BOTONES */
+
+button {
+    margin-bottom: 2.4rem;
+}
 button:hover {
     background-color: #579292;
     transition: all 0.5s;
 
 } 
 
-/* Estilos del footer */
+/* FOOTER */
 footer {
     background-color: #0a5454;
     color: white;

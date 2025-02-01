@@ -19,11 +19,13 @@ public class LibrosServiceImp implements LibrosService {
     public LibrosServiceImp() {
         // Agregamos algunos libros iniciales para probar
         librosRepository.add(new Libro(1L, "El Señor de los Anillos", 1954, Genero.FANTASIA, "J.R.R. Tolkien",
-                Idioma.ESPAÑOL, "Una épica aventura en la Tierra Media", LocalDate.now()));
+                Idioma.ESPAÑOL, "Una épica aventura en la Tierra Media", LocalDate.now(),"srAnillos.jpg"));
+
         librosRepository.add(new Libro(2L, "Cien Años de Soledad", 1967, Genero.DRAMA, "Gabriel García Márquez",
-                Idioma.ESPAÑOL, "La historia de la familia Buendía", LocalDate.now()));
+                Idioma.ESPAÑOL, "La historia de la familia Buendía", LocalDate.now(),"cienASoledad.jpg"));
+
         librosRepository.add(new Libro(3L, "1984", 1949, Genero.CIENCIA_FICCION, "George Orwell", Idioma.INGLES,
-                "Una crítica distópica de la sociedad", LocalDate.now()));
+                "Una crítica distópica de la sociedad", LocalDate.now(),"1984.jpg"));
     }
 
     public void add(Libro libro) {
@@ -64,18 +66,33 @@ public class LibrosServiceImp implements LibrosService {
 
     // Método actualizar libro
     public Libro editBook(Libro libro) {
-
-        // Obtenemos la posición del libro a modificar dentro
-        // del array librosRepository
+        // Obtenemos el libro a modificar dentro del repositorio
         int pos = librosRepository.indexOf(libro);
+        
         if (pos == -1) {
             throw new RuntimeException("Libro no encontrado");
         } else {
-            librosRepository.set(pos, libro);
+            // Recuperamos el libro actual para no perder la portada
+            Libro libroExistente = librosRepository.get(pos);
+    
+            // Actualizamos todos los campos menos la portada
+            libroExistente.setTitulo(libro.getTitulo());
+            libroExistente.setAutor(libro.getAutor());
+            libroExistente.setYear(libro.getYear());
+            libroExistente.setGenero(libro.getGenero());
+            libroExistente.setSinopsis(libro.getSinopsis());
+            libroExistente.setFechaDeAlta(libro.getFechaDeAlta());
+            
+            // Si el campo de portada viene vacío o nulo, mantenemos la portada anterior
+            if (libro.getPortada() != null && !libro.getPortada().isEmpty()) {
+                libroExistente.setPortada(libro.getPortada());
+            }
+            
+            // Reemplazamos el libro en el repositorio con los datos actualizados
+            librosRepository.set(pos, libroExistente);
         }
-
+    
         return libro;
-
     }
 
     // BUSCADOR

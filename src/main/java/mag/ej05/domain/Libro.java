@@ -27,5 +27,7 @@ public class Libro {
         private String sinopsis; 
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate fechaDeAlta;  
+
+        private String portada;
     
     }

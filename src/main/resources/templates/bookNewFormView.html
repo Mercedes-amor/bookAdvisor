@@ -18,6 +18,7 @@
               method="post"
               th:action="@{/libros/addBook/submit}"
               th:object="${libro}"
+              enctype="multipart/form-data"
               class="card p-4 shadow"
             >
               <div class="divForm">
@@ -93,7 +94,10 @@
                   ></option>
                 </select>
               </div>
-
+              <div class="divForm">
+                <label class="form-label">Portada:</label>
+                <input type="file" name="file" />
+              </div>
               <button type="submit" class="btn btn-primary">Enviar</button>
             </form>
           </div>

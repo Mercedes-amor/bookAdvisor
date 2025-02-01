@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,12 +14,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import mag.ej05.FormInfo;
 import mag.ej05.domain.Genero;
 import mag.ej05.domain.Libro;
 import mag.ej05.services.EmailService;
+import mag.ej05.services.FileStorageService;
 import mag.ej05.services.LibrosService;
 
 @Controller
@@ -28,6 +32,10 @@ public class PrincipalController {
 
     @Autowired
     private EmailService emailService;
+
+    // Servicio de almacenamiento ficheros
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @Autowired(required = true)
     LibrosService librosService;
@@ -121,8 +129,8 @@ public class PrincipalController {
 
         model.addAttribute("txtErr", txtErr);
         model.addAttribute("libro", new Libro());
-        
-        txtErr = null; //Reseteamos variable
+
+        txtErr = null; // Reseteamos variable
         return "bookNewFormView";
     }
 
@@ -130,12 +138,28 @@ public class PrincipalController {
     public String showNewBookSubmit(
             @Valid Libro libro,
             BindingResult bindingResult,
+            @RequestParam MultipartFile file,
             Model model) {
         // Para los errores que llegan por el @Valid
         if (bindingResult.hasErrors()) {
             txtErr = "No has completado todos los campos";
             return "redirect:/libros/addBook";
         }
+
+        try {
+            if (!file.isEmpty()) {
+                String newFileName = fileStorageService.store(file);
+                // devuelve el nombre definitivo con el que se ha guardado.
+                // lo podríamos guardar en algún objeto
+                libro.setPortada(newFileName);
+                System.out.println("Fichero almacenado:" + newFileName);
+            }
+
+        } catch (Exception e) {
+            txtErr = e.getMessage();
+            return "redirect:/libros/addBook";
+        }
+
         try {
             librosService.add(libro);
         } catch (RuntimeException e) {
@@ -168,13 +192,30 @@ public class PrincipalController {
     @PostMapping("/libros/edit/submit")
     public String getEditSubmit(
             @Valid Libro libroForm,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            Model model) {
+
         // Para los errores que llegan por el @Valid
         if (bindingResult.hasErrors()) {
             return "redirect:/edit/submit?err=1";
         }
+        
         try {
+            if (!file.isEmpty()) {
+                // Guardamos la imagen y obtenemos el nombre del archivo
+                String newFileName = fileStorageService.store(file);
+                libroForm.setPortada(newFileName);  // Actualizamos la portada del libro con el nuevo archivo
+            } else {
+                // Si no se sube un nuevo archivo, mantenemos la portada original
+                Libro libroExistente = librosService.getOneById(libroForm.getId());
+                libroForm.setPortada(libroExistente.getPortada());
+            }
+    
+            // Actualizamos el libro en la base de datos
             librosService.editBook(libroForm);
+
+
         } catch (RuntimeException e) {
             // Capturamos las excepciones que llegan del service
             txtErr = e.getMessage();
@@ -189,6 +230,13 @@ public class PrincipalController {
     public String showDelete(@PathVariable Long id) {
         librosService.deleteById(id);
         return "redirect:/libros";
+    }
+
+    // MÉTODO PASAR IMÁGENES
+    @GetMapping("/files/{filename:.+}")
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+        Resource file = fileStorageService.loadAsResource(filename);
+        return ResponseEntity.ok().body(file);
     }
 
     // BUSCADOR

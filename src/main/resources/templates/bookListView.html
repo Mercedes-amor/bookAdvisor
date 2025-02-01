@@ -62,7 +62,7 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <!-- <th>Portada</th> -->
+                <th>Portada</th>
                 <th>Título</th>
                 <th>Autor</th>
                 <th>Sinopsis</th>
@@ -74,6 +74,11 @@
               <!-- Ejemplo de fila para un libro -->
               <tr th:each="libro: ${listaLibros}">
                 <td th:text="${libro.id}"></td>
+                <td>
+                  <img th:if="${libro.portada != null}" th:src="@{/files/{filename}(filename=${libro.portada})}" alt="Portada del libro" width="64px">
+
+                  <!-- <img th:src="'/files/'+${libro.portada}" width="64px"/> -->
+                </td>
                 <td>
                   <a
                     th:href="@{/listone/{id}(id=${libro.id})}"

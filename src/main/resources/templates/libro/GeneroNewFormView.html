@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <!-- Header con fragmentación -->
+  <head th:insert="~{fragments/header :: header}"></head>
+
+  <body>
+    <!-- Navbar con fragmentación-->
+    <div th:insert="~{fragments/header :: navbar}"></div>
+
+    <!-- Formulario -->
+    <section id="formulario" class="container">
+      <main>
+        <article>
+          <div class="formContainer">
+            <h2 class="titulo" id="centrado">Nuevo Genero</h2>
+
+            <form
+              method="post"
+              th:action="@{/libros/addGenero/submit}"
+              th:object="${genero}"
+              enctype="multipart/form-data"
+              class="card p-4 shadow"
+            >
+            <!-- Id autogenerado -->
+              <!-- <div class="divForm">
+                <label for="id" class="form-label">Id:</label>
+                <input
+                  type="text"
+                  id="id"
+                  th:field="*{id}"
+                  class="form-control"
+                />
+              </div> -->
+              <div class="divForm">
+                <label for="nombre" class="form-label">Nombre del Género:</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  th:field="*{nombre}"
+                  class="form-control"
+                />
+              </div>        
+                            
+              <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+          </div>
+        </article>
+      </main>
+    </section>
+
+    <div th:if="${txtErr != null}" class="alert alert-warning" role="alert">
+      <p th:text="${txtErr}">Texto de error</p>
+    </div>
+
+    <footer>&copy; Mercedes Amor Gallart</footer>
+  </body>
+</html>

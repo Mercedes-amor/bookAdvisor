@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <!-- Header con fragmentación -->
+  <head th:insert="~{fragments/header :: header}"></head>
+
+  <body>
+    <!-- Navbar con fragmentación-->
+    <div th:insert="~{fragments/header :: navbar}"></div>
+
+    <!-- Lista usuarios -->
+    <section id="libros" class="container">
+      <h2 class="titulo">Lista usuarios</h2>
+      <article class="cabecera">
+        <div class="container mt-5">
+                   
+
+          <!-- Tabla de Libros -->
+          <table class="table table-bordered mt-4">
+            <thead>
+              <tr>
+                <!-- <th>ID</th> -->
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Ejemplo de fila para un libro -->
+              <tr th:each="user: ${listaUsuarios}">              
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.nombre}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                  <!-- Botones para editar y borrar -->
+                  <a
+                    th:href="@{/usuarios/edit/{id}(id=${user.id})}"
+                    class="btn btn-warning btn-sm"
+                    >Editar</a
+                  >
+                  <a
+                    th:href="@{/usuarios/delete/{id}(id=${user.id})}"
+                    class="btn btn-danger btn-sm"
+                    onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?')"
+                    >Borrar</a
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Botón para añadir un nuevo usuario -->
+          <div class="text-center mt-4">
+            <a href="/usuarios/addUser" class="btn btn-primary btn-lg"
+              >Añadir Usuario</a
+            >
+          </div>
+          
+        </div>
+      </article>
+    </section>
+
+    <footer>&copy; <span th:text="${year}">3000</span> - Mercedes Amor</footer>
+  </body>
+</html>

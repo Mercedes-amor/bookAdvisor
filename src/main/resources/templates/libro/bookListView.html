@@ -12,7 +12,6 @@
       <h2 class="titulo">Catálogo de libros</h2>
       <article class="cabecera">
         <div class="container mt-5">
-
           <!-- FORMULARIO BÚSQUEDA -->
           <form
             method="post"
@@ -33,11 +32,10 @@
             <select id="genero" onChange="changeGenero();" class="mb-3">
               <option value="">Todos</option>
               <option
-                th:each="gen : ${T(mag.ej05.domain.Genero).values()}"
-                th:value="${gen}"
-                th:text="${gen}"
-                th:selected="${gen.name() == generoSeleccionado?.name()}"
-              ></option>
+              th:each="genero : ${generos}"
+              th:value="${genero.id}"
+              th:text="${genero.nombre}"
+            ></option>
             </select>
           </div>
 
@@ -61,21 +59,27 @@
           <table class="table table-bordered mt-4">
             <thead>
               <tr>
-                <th>ID</th>
+                <!-- <th>ID</th> -->
                 <th>Portada</th>
                 <th>Título</th>
                 <th>Autor</th>
                 <th>Sinopsis</th>
-                <th>Idioma</th>
+                <th>Género</th>
+                <th>Valoración</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               <!-- Ejemplo de fila para un libro -->
               <tr th:each="libro: ${listaLibros}">
-                <td th:text="${libro.id}"></td>
+                <!-- <td th:text="${libro.id}"></td> -->
                 <td>
-                  <img th:if="${libro.portada != null}" th:src="@{/files/{filename}(filename=${libro.portada})}" alt="Portada del libro" width="64px">
+                  <img
+                    th:if="${libro.portada != null}"
+                    th:src="@{/files/{filename}(filename=${libro.portada})}"
+                    alt="Portada del libro"
+                    width="64px"
+                  />
 
                   <!-- <img th:src="'/files/'+${libro.portada}" width="64px"/> -->
                 </td>
@@ -88,7 +92,8 @@
                 </td>
                 <td th:text="${libro.autor}"></td>
                 <td th:text="${libro.sinopsis}"></td>
-                <td th:text="${libro.genero}"></td>
+                <td th:text="${libro.genero.nombre}"></td>
+                <td th:text="${libro.mediaValoracion}"></td>
                 <td>
                   <!-- Botones para editar y borrar -->
                   <a
@@ -102,6 +107,11 @@
                     onclick="return confirm('¿Estás seguro de que deseas eliminar este libro?')"
                     >Borrar</a
                   >
+                  <a
+                  th:href="@{/libros/votacion/{id}(id=${libro.id})}"
+                  class="btn btn-info btn-sm"
+                  >Votar</a
+                >
                 </td>
               </tr>
             </tbody>
@@ -111,6 +121,12 @@
           <div class="text-center mt-4">
             <a href="/libros/addBook" class="btn btn-primary btn-lg"
               >Añadir Libro</a
+            >
+          </div>
+          <!-- Botón para añadir un nuevo Género -->
+          <div class="text-center mt-4">
+            <a href="/libros/addGenero" class="btn btn-primary btn-lg"
+              >Añadir Género nuevo</a
             >
           </div>
         </div>

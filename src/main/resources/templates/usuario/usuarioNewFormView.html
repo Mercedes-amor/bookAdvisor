@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <!-- Header con fragmentación -->
+  <head th:insert="~{fragments/header :: header}"></head>
+
+  <body>
+    <!-- Navbar con fragmentación-->
+    <div th:insert="~{fragments/header :: navbar}"></div>
+
+    <!-- Formulario NUEVO USUARIO-->
+    <section id="formulario" class="container">
+      <main>
+        <article>
+          <div class="formContainer">
+            <h2 class="titulo" id="centrado">Nuevo Usuario</h2>
+
+            <form
+              method="post"
+              th:action="@{/usuarios/addUser/submit}"
+              th:object="${usuario}"
+              enctype="multipart/form-data"
+              class="card p-4 shadow"
+            >
+              <div class="divForm">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  th:field="*{nombre}"
+                  class="form-control"
+                />
+              </div>
+              <div class="divForm">
+                <label for="email" class="form-label">email:</label>
+                <input
+                  type="email"
+                  id="email"
+                  th:field="*{email}"
+                  class="form-control"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+          </div>
+        </article>
+      </main>
+    </section>
+
+    <div th:if="${txtErr != null}" class="alert alert-warning" role="alert">
+      <p th:text="${txtErr}">Texto de error</p>
+    </div>
+
+    <footer>&copy; Mercedes Amor Gallart</footer>
+  </body>
+</html>

@@ -1,47 +1,47 @@
 package mag.ej05.services;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import mag.ej05.domain.Genero;
-import mag.ej05.domain.Idioma;
 import mag.ej05.domain.Libro;
+import mag.ej05.domain.LibroDTO;
+import mag.ej05.repositories.GeneroRepository;
+import mag.ej05.repositories.LibroRepository;
 
 @Service
 public class LibrosServiceImp implements LibrosService {
 
-    /// Inicializamos el ArrayList de libros
-    List<Libro> librosRepository = new ArrayList<>();
+    // Autoinyectamos el repositorio
+    @Autowired
+    LibroRepository libroRepository;
 
-    public LibrosServiceImp() {
-        // Agregamos algunos libros iniciales para probar
-        librosRepository.add(new Libro(1L, "El Señor de los Anillos", 1954, Genero.FANTASIA, "J.R.R. Tolkien",
-                Idioma.ESPAÑOL, "Una épica aventura en la Tierra Media", LocalDate.now(),"srAnillos.jpg"));
-
-        librosRepository.add(new Libro(2L, "Cien Años de Soledad", 1967, Genero.DRAMA, "Gabriel García Márquez",
-                Idioma.ESPAÑOL, "La historia de la familia Buendía", LocalDate.now(),"cienASoledad.jpg"));
-
-        librosRepository.add(new Libro(3L, "1984", 1949, Genero.CIENCIA_FICCION, "George Orwell", Idioma.INGLES,
-                "Una crítica distópica de la sociedad", LocalDate.now(),"1984.jpg"));
-    }
+    @Autowired
+    GeneroRepository generoRepository;
 
     public void add(Libro libro) {
+        LocalDate fecha = LocalDate.now();
 
-        librosRepository.add(libro);
+        libro.setFechaDeAlta(fecha);
+
+        libro.setMediaValoracion(0d);
+
+        libroRepository.save(libro);
     }
 
     // Método eliminar libro
     public void deleteById(Long id) {
-        if (librosRepository.isEmpty()) {
+        if (libroRepository.count() == 0) {
             throw new RuntimeException("La lista de libros está vacía");
         }
 
         Libro libro = getOneById(id);
         if (libro != null) {
-            librosRepository.remove(libro);
+            libroRepository.delete(libro);
         } else {
             throw new RuntimeException("No se ha encontrado el libro");
         }
@@ -50,72 +50,89 @@ public class LibrosServiceImp implements LibrosService {
 
     // Método obtener un libro
     public Libro getOneById(Long id) {
-        for (Libro libro : librosRepository) {
-            if (libro.getId().equals(id)) {
-                return libro;
-            }
-        }
-        // Lanzamos una excepción al no encontrar el empleado buscado por id
-        throw new RuntimeException("libro no encontrado");
+
+         return libroRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
     }
 
     // Método obtener todos
     public List<Libro> getAll() {
-        return librosRepository;
+        return libroRepository.findAll();
     }
 
     // Método actualizar libro
     public Libro editBook(Libro libro) {
         // Obtenemos el libro a modificar dentro del repositorio
-        int pos = librosRepository.indexOf(libro);
-        
-        if (pos == -1) {
-            throw new RuntimeException("Libro no encontrado");
-        } else {
-            // Recuperamos el libro actual para no perder la portada
-            Libro libroExistente = librosRepository.get(pos);
-    
-            // Actualizamos todos los campos menos la portada
-            libroExistente.setTitulo(libro.getTitulo());
-            libroExistente.setAutor(libro.getAutor());
-            libroExistente.setYear(libro.getYear());
-            libroExistente.setGenero(libro.getGenero());
-            libroExistente.setSinopsis(libro.getSinopsis());
-            libroExistente.setFechaDeAlta(libro.getFechaDeAlta());
-            
+        Libro libroAEditar = libroRepository.findById(libro.getId())
+        .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+
+        libro.setPortada(libroAEditar.getPortada());
+                
             // Si el campo de portada viene vacío o nulo, mantenemos la portada anterior
             if (libro.getPortada() != null && !libro.getPortada().isEmpty()) {
-                libroExistente.setPortada(libro.getPortada());
+                libroAEditar.setPortada(libro.getPortada());
             }
-            
-            // Reemplazamos el libro en el repositorio con los datos actualizados
-            librosRepository.set(pos, libroExistente);
-        }
-    
-        return libro;
+              
+        return libroRepository.save(libro);
     }
+
+    //Método convertir Libro a LibroDTO
+    public LibroDTO convertirADTO(Libro libro) {
+        if (libro == null) {
+            throw new RuntimeException("No se ha encontrado el libro");
+        }
+        return new LibroDTO(
+            libro.getId(),
+            libro.getTitulo(),
+            libro.getGenero(),
+            libro.getAutor(),
+            libro.getSinopsis(),
+            libro.getPortada(),
+            libro.getMediaValoracion()
+        );
+    }
+
+        // Método obtener todos los DTO
+        public List<LibroDTO> getAllDTO() {
+            return libroRepository.findAll() //Obtenemos todos los libros
+                .stream().map(this::convertirADTO) //Convierte cada libro en DTO usando el método anterior
+                .collect(Collectors.toList());
+        }
 
     // BUSCADOR
     public List<Libro> findByTitle(String busqueda) {
         // Convertimos todo a minúscula para que no no sea case sensitive
         busqueda = busqueda.toLowerCase();
         // Creamos un nuevo arrayList para almacenar los empleados encontrados
-        List<Libro> encontrados = new ArrayList<>();
-        // Comparacion con .contains para comprobar si el título contiene el texto
-        // buscado
-        for (Libro libro : librosRepository)
-            if (libro.getTitulo().toLowerCase().contains(busqueda))
-                // Si lo encuentra lo añade al arrayList
-                encontrados.add(libro);
+        List<Libro> encontrados = libroRepository.findByTituloContainingIgnoreCase(busqueda);
+        
         return encontrados;
     }
 
      // BÚSQUEDA POR GÉNERO
      public List<Libro> findByGenero(Genero genero) {
-        List<Libro> encontrados = new ArrayList<>();
-        for (Libro libro : librosRepository)
-            if (libro.getGenero() == genero)
-                encontrados.add(libro);
+        List<Libro> encontrados = libroRepository.findByGenero(genero);
+        
         return encontrados;
     }
+
+
+    //GENERO
+    
+    //Método añadir un genero
+    public void addGenero (Genero genero) {
+
+        generoRepository.save(genero);
+    }
+    // Método obtener un genero
+    public Genero getOneGeneroById(Long id) {
+
+        return generoRepository.findById(id)
+       .orElseThrow(() -> new RuntimeException("Genero no encontrado"));
+   }
+
+   // Método obtener todos
+   public List<Genero> getAllGeneros() {
+       return generoRepository.findAll();
+   }
 }

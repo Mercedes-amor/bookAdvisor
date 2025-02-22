@@ -20,9 +20,13 @@ import jakarta.validation.Valid;
 import mag.ej05.FormInfo;
 import mag.ej05.domain.Genero;
 import mag.ej05.domain.Libro;
+import mag.ej05.domain.Usuario;
+import mag.ej05.domain.Valoracion;
 import mag.ej05.services.EmailService;
 import mag.ej05.services.FileStorageService;
 import mag.ej05.services.LibrosService;
+import mag.ej05.services.UsuarioService;
+import mag.ej05.services.ValoracionService;
 
 @Controller
 public class PrincipalController {
@@ -39,6 +43,12 @@ public class PrincipalController {
 
     @Autowired(required = true)
     LibrosService librosService;
+
+    @Autowired
+    UsuarioService usuarioService;
+
+    @Autowired(required = true)
+    ValoracionService valoracionService;
 
     @GetMapping("/")
     public String showHome(Model model) {
@@ -102,8 +112,8 @@ public class PrincipalController {
     @GetMapping("/libros")
     public String showLibros(Model model) {
 
-        model.addAttribute("listaLibros", librosService.getAll());
-        return "bookListView";
+        model.addAttribute("listaLibros", librosService.getAllDTO());
+        return "libro/bookListView";
 
     }
 
@@ -112,6 +122,7 @@ public class PrincipalController {
     public String getOne(@PathVariable Long id, Model model) {
         try {
             model.addAttribute("libro", librosService.getOneById(id));
+            model.addAttribute("listaValoraciones", valoracionService.getValoracionesLibro(id));
 
         } catch (RuntimeException e) {
             // Si se lanza la excepción guardamos el mensaje en la variable txtErr para
@@ -119,7 +130,7 @@ public class PrincipalController {
             txtErr = e.getMessage();
             return "redirect:/libros";
         }
-        return "bookView";
+        return "libro/bookView";
     }
 
     // FORMULARIO AÑADIR LIBRO
@@ -128,10 +139,11 @@ public class PrincipalController {
             Model model) {
 
         model.addAttribute("txtErr", txtErr);
+        model.addAttribute("generos", librosService.getAllGeneros());
         model.addAttribute("libro", new Libro());
 
         txtErr = null; // Reseteamos variable
-        return "bookNewFormView";
+        return "libro/bookNewFormView";
     }
 
     @PostMapping("/libros/addBook/submit")
@@ -185,8 +197,31 @@ public class PrincipalController {
         }
 
         Libro libroAEditar = librosService.getOneById(id);
+        model.addAttribute("generos", librosService.getAllGeneros());
         model.addAttribute("libroForm", libroAEditar);
-        return "bookEditFormView";
+        return "libro/bookEditFormView";
+    }
+
+    @PostMapping("/libros/addGenero/submit")
+    public String showNewGeneroSubmit(
+            @Valid Genero genero,
+            BindingResult bindingResult,
+            Model model) {
+        // Para los errores que llegan por el @Valid
+        if (bindingResult.hasErrors()) {
+            txtErr = "No has completado todos los campos";
+            return "redirect:/libros/addGenero";
+        }
+
+        try {
+            librosService.addGenero(genero);
+        } catch (RuntimeException e) {
+            // Capturamos las excepciones que llegan del service
+            txtErr = e.getMessage();
+            return "redirect:/libros/addGenero";
+        }
+
+        return "redirect:/libros";
     }
 
     @PostMapping("/libros/edit/submit")
@@ -200,21 +235,20 @@ public class PrincipalController {
         if (bindingResult.hasErrors()) {
             return "redirect:/edit/submit?err=1";
         }
-        
+
         try {
             if (!file.isEmpty()) {
                 // Guardamos la imagen y obtenemos el nombre del archivo
                 String newFileName = fileStorageService.store(file);
-                libroForm.setPortada(newFileName);  // Actualizamos la portada del libro con el nuevo archivo
+                libroForm.setPortada(newFileName); // Actualizamos la portada del libro con el nuevo archivo
             } else {
                 // Si no se sube un nuevo archivo, mantenemos la portada original
                 Libro libroExistente = librosService.getOneById(libroForm.getId());
                 libroForm.setPortada(libroExistente.getPortada());
             }
-    
+
             // Actualizamos el libro en la base de datos
             librosService.editBook(libroForm);
-
 
         } catch (RuntimeException e) {
             // Capturamos las excepciones que llegan del service
@@ -232,6 +266,19 @@ public class PrincipalController {
         return "redirect:/libros";
     }
 
+    // GÉNERO
+    // FORMULARIO AÑADIR GÉNERO
+    @GetMapping("/libros/addGenero")
+    public String showNewGenero(
+            Model model) {
+
+        model.addAttribute("txtErr", txtErr);
+        model.addAttribute("genero", new Genero());
+
+        txtErr = null; // Reseteamos variable
+        return "libro/generoNewFormView";
+    }
+
     // MÉTODO PASAR IMÁGENES
     @GetMapping("/files/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
@@ -243,7 +290,7 @@ public class PrincipalController {
 
     @GetMapping("/findByTitle")
     public String showFindByTitle() {
-        return "bookListView";
+        return "libro/bookListView";
     }
 
     @PostMapping("/findByTitle")
@@ -260,7 +307,7 @@ public class PrincipalController {
         // del formulario
         model.addAttribute("busqueda", busqueda);
 
-        return "bookListView";
+        return "libro/bookListView";
     }
 
     // BÚSQUEDA POR GÉNERO
@@ -270,9 +317,66 @@ public class PrincipalController {
             Model model) {
         // Llamamos a la función buscarPorGénero y mostramos el resultado
         model.addAttribute("listaLibros", librosService.findByGenero(genero));
+        model.addAttribute("generos", librosService.getAllGeneros());
         // Pasamos a la vista la opción seleccionada
         model.addAttribute("generoSeleccionado", genero);
-        return "bookListView";
+        return "libro/bookListView";
+    }
+
+    // VOTACIÓN
+
+    @GetMapping("/libros/votacion/{id}")
+    public String getOneVoto(@PathVariable Long id, Model model) {
+        try {
+            Libro libro = librosService.getOneById(id);
+
+            // Obtenemos el libro al que vamos a votar
+            model.addAttribute("libro", libro);
+            model.addAttribute("valoracionForm", new Valoracion());
+            model.addAttribute("listaUsuarios", usuarioService.getAll());
+
+        } catch (RuntimeException e) {
+            // Si se lanza la excepción guardamos el mensaje en la variable txtErr para
+            // mostrarla
+            txtErr = e.getMessage();
+            return "redirect:/libros";
+        }
+
+        return "libro/bookVotoView";
+    }
+
+    @PostMapping("/libros/votacion/submit")
+    public String showNewVotoSubmit(
+            @Valid Valoracion valoracionForm,
+            BindingResult bindingResult,
+            Model model) {
+        System.out.println("Valoración recibida: " + valoracionForm);
+
+        // Para los errores que llegan por el @Valid
+        if (bindingResult.hasErrors()) {
+            txtErr = "No has completado todos los campos";
+            return "redirect:/libros";
+        }
+
+        try {
+            // Recuperamos los objectos completos de Libro y Usuario, ya que a través
+            // del formulario solo nos llegan los id.
+            Libro libro = librosService.getOneById(valoracionForm.getLibro().getId());
+            Usuario usuario = usuarioService.getOneById(valoracionForm.getUsuario().getId());
+            System.out.println("libroid es: " + libro.getId());
+            // Asignamos los objetos completos a la valoración
+            valoracionForm.setLibro(libro);
+            valoracionForm.setUsuario(usuario);
+            
+            // Guardamos la valoración
+            valoracionService.addValoracion(valoracionForm);
+        } catch (RuntimeException e) {
+            // Capturamos las excepciones que llegan del service
+            txtErr = e.getMessage();
+            return "redirect:/libros";
+        }
+
+        return "redirect:/libros";
     }
 
 }

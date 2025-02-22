@@ -16,21 +16,21 @@
 
             <form
               method="post"
-              th:action="@{/libros/edit/submit}"
-              th:object="${libroForm}"
+              th:action="@{/libros/addBook/submit}"
+              th:object="${libro}"
               enctype="multipart/form-data"
               class="card p-4 shadow"
             >
-              <div class="divForm">
+            <!-- Id autogenerado -->
+              <!-- <div class="divForm">
                 <label for="id" class="form-label">Id:</label>
                 <input
-                  readonly
                   type="text"
                   id="id"
                   th:field="*{id}"
                   class="form-control"
                 />
-              </div>
+              </div> -->
               <div class="divForm">
                 <label for="titulo" class="form-label">Título:</label>
                 <input
@@ -44,8 +44,8 @@
                 <label for="date" class="form-label">Año:</label>
                 <input
                   type="text"
-                  id="year"
-                  th:field="*{year}"
+                  id="annio"
+                  th:field="*{annio}"
                   class="form-control"
                 />
               </div>
@@ -81,20 +81,18 @@
                   ></option>
                 </select>
               </div>
-
+              <!-- Género ahora es una Entidad -->
               <div class="divForm">
                 <label class="form-label">Género:</label>
                 <select class="form-select" name="genero" th:field="*{genero}">
-                  <option value="" selected disabled>
-                    Seleccione un género
-                  </option>
-                  <option
-                    th:each="genero : ${T(mag.ej05.domain.Genero).values()}"
-                    th:value="${genero}"
-                    th:text="${genero}"
-                  ></option>
+                    <option value="" selected disabled>Seleccione un género</option>
+                    <option th:each="genero : ${generos}" 
+                            th:value="${genero.id}" 
+                            th:text="${genero.nombre}">
+                    </option>
                 </select>
-              </div>
+            </div>
+            
               <div class="divForm">
                 <label class="form-label">Portada:</label>
                 <input type="file" name="file" />
@@ -106,8 +104,8 @@
       </main>
     </section>
 
-    <div th:if="${textErr != null}" class="alert alert-warning" role="alert">
-      <p th:text="${textErr}">Texto de error</p>
+    <div th:if="${txtErr != null}" class="alert alert-warning" role="alert">
+      <p th:text="${txtErr}">Texto de error</p>
     </div>
 
     <footer>&copy; Mercedes Amor Gallart</footer>

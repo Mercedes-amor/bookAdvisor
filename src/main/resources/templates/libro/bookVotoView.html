@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <!-- Header con fragmentación -->
+  <head th:insert="~{fragments/header :: header}"></head>
+
+  <body>
+    <!-- Navar con fragmentación-->
+    <div th:insert="~{fragments/header :: navbar}"></div>
+
+    <!-- Catálogo Libros -->
+
+    <article>
+      <h1 class="mb-4">Votación del Libro</h1>
+
+      <table class="table table-striped table-bordered">
+        <tbody>
+          <tr>
+            <!-- Primera celda de cada fila: Imagen de portada -->
+            <td rowspan="7" class="text-center align-middle">
+              <img
+                th:src="@{'/files/' + ${libro.portada}}"
+                alt="Portada del libro"
+                class="img-fluid rounded shadow-lg"
+                style="max-width: 250px"
+              />
+            </td>
+            <td><strong>Id:</strong> <span th:text="${libro.id}"></span></td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Título:</strong> <span th:text="${libro.titulo}"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Autor:</strong> <span th:text="${libro.autor}"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Sinopsis:</strong>
+              <span th:text="${libro.sinopsis}"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Género:</strong> <span th:text="${libro.genero.nombre}"></span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Año:</strong> <span th:text="${libro.annio}"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+    <div class="formContainer">
+      <h4 class="titulo" id="centrado">Déjanos tu valoración</h4>
+
+      <!-- FORMULARIO VALORACIÓN -->
+      <form
+        method="post"
+        th:action="@{/libros/votacion/submit}"
+        th:object="${valoracionForm}"
+        enctype="multipart/form-data"
+        class="card p-4 shadow"
+      >
+      <div class="divForm">
+        <label for="libro" class="form-label">Libro a votar:</label>
+        <input type="hidden" id="libro" name="libro.id" th:value="${libro.id}" />
+
+      <p th:text="${libro.titulo}"></p>
+      </div>
+        <div class="divForm">
+          <label for="puntuacion" class="form-label"
+            >Puntuación: (Entre 0 y 5)</label
+          >
+          <input
+            type="number"
+            id="puntuacion"
+            th:field="*{puntuacion}"
+            class="form-control"
+            min="0"
+            max="5"
+          />
+        </div>
+        <div class="divForm">
+          <label for="comentarios" class="form-label">comentarios:</label>
+          <input
+            type="text"
+            id="comentarios"
+            th:field="*{comentarios}"
+            class="form-control"
+            placeholder="Déjanos tu opinión sobre el libro"
+          />
+        </div>
+        <!-- Selección usuario -->
+        <div class="divForm">
+          <label class="form-label">Seleccione usuario:</label>
+          <select class="form-select" th:field="*{usuario.id}">
+            <option value="" selected disabled>Seleccione un usuario</option>
+            <option
+              th:each="usuario : ${listaUsuarios}"
+              th:value="${usuario.id}"
+              th:text="${usuario.nombre}"
+            ></option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </form>
+    </div>
+    <footer>
+      &copy;
+      <span th:text="${year}">3000</span>
+      - Mercedes Amor
+    </footer>
+  </body>
+</html>

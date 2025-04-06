@@ -16,7 +16,7 @@
           <form
             method="post"
             action="#"
-            th:action="@{/findByTitle}"
+            th:action="@{/libros/findByTitle}"
             class="buscador"
           >
             <label
@@ -33,7 +33,7 @@
               <option value="">Todos</option>
               <option
               th:each="genero : ${generos}"
-              th:value="${genero.id}"
+              th:value="${genero}"
               th:text="${genero.nombre}"
             ></option>
             </select>
@@ -43,14 +43,14 @@
             function changeGenero() {
               const select = document.getElementById("genero");
               if (select.value == "") window.location.href = "/";
-              else window.location.href = "/findByGenero/" + select.value;
+              else window.location.href = "/libros/findByGenero/" + select.value;
             }
           </script>
 
           <br />
 
           <!-- RESETAR BÚSQUEDA -->
-          <form method="get" action="#" th:action="@{/libros}">
+          <form method="get" action="#" th:action="@{/libros/}">
             <input type="submit" value="Resetear" class="btn btn-success" />
           </form>
           <br />
@@ -76,7 +76,7 @@
                 <td>
                   <img
                     th:if="${libro.portada != null}"
-                    th:src="@{/files/{filename}(filename=${libro.portada})}"
+                    th:src="@{/libros/files/{filename}(filename=${libro.portada})}"
                     alt="Portada del libro"
                     width="64px"
                   />
@@ -85,7 +85,7 @@
                 </td>
                 <td>
                   <a
-                    th:href="@{/listone/{id}(id=${libro.id})}"
+                    th:href="@{/libros/listone/{id}(id=${libro.id})}"
                     th:text="${libro.titulo}"
                     >titulo</a
                   >

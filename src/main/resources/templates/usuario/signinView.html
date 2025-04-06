@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+  <!-- Header con fragmentación -->
+  <head th:insert="~{fragments/header :: header}"></head>
+
+<body class="card-body"></body><h2>Introduce tus credenciales:</h2>
+<div th:if="${param.error}">Credenciales incorrectas</div>
+<div th:if="${param.logout}">Te has desconectado</div>
+<form th:action="@{/login}" method="post">
+<input type="text" name="username" placeholder="Username"/><br/>
+<input type="password" name="password" placeholder="Password"/><br/>
+<input type="submit" value="Log in" />
+</form>
+</br>
+</br>
+<a th:href="@{/public/}" class="btn btn-secondary ms-2">Volver Inicio</a>
+</body>
+</html>

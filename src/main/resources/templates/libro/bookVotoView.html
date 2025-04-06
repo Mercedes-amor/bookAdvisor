@@ -18,7 +18,7 @@
             <!-- Primera celda de cada fila: Imagen de portada -->
             <td rowspan="7" class="text-center align-middle">
               <img
-                th:src="@{'/files/' + ${libro.portada}}"
+                th:src="@{'/libros/files/' + ${libro.portada}}"
                 alt="Portada del libro"
                 class="img-fluid rounded shadow-lg"
                 style="max-width: 250px"
@@ -95,18 +95,8 @@
             placeholder="Déjanos tu opinión sobre el libro"
           />
         </div>
-        <!-- Selección usuario -->
-        <div class="divForm">
-          <label class="form-label">Seleccione usuario:</label>
-          <select class="form-select" th:field="*{usuario.id}">
-            <option value="" selected disabled>Seleccione un usuario</option>
-            <option
-              th:each="usuario : ${listaUsuarios}"
-              th:value="${usuario.id}"
-              th:text="${usuario.nombre}"
-            ></option>
-          </select>
-        </div>
+        <!-- Usuario logeado -->
+        <input type="hidden" th:field="*{usuario.id}" />
         <button type="submit" class="btn btn-primary">Enviar</button>
       </form>
     </div>

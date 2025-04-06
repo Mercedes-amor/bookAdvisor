@@ -5,16 +5,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
+import mag.ej05.domain.Rol;
 import mag.ej05.domain.Usuario;
 import mag.ej05.services.LibrosService;
 import mag.ej05.services.UsuarioService;
 
 @Controller
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
     // Variable para almacenar errores
@@ -28,7 +32,7 @@ public class UsuarioController {
 
     // USUARIOS
 
-    @GetMapping("/usuarios")
+    @GetMapping("/")
     public String showLibros(Model model) {
 
         model.addAttribute("listaUsuarios", usuarioService.getAll());
@@ -36,8 +40,8 @@ public class UsuarioController {
 
     }
 
-    // FORMULARIO AÑADIR USUARIO
-    @GetMapping("/usuarios/addUser")
+    // FORMULARIO AÑADIR USUARIO (POR ADMIN)
+    @GetMapping("/addUser")
     public String showNewUser(
             Model model) {
 
@@ -48,7 +52,7 @@ public class UsuarioController {
         return "usuario/usuarioNewFormView";
     }
 
-    @PostMapping("/usuarios/addUser/submit")
+    @PostMapping("/addUser/submit")
     public String showNewUserSubmit(
             @Valid Usuario usuario,
             BindingResult bindingResult,
@@ -67,11 +71,29 @@ public class UsuarioController {
             return "redirect:/usuarios/addUser";
         }
 
-        return "redirect:/usuarios";
+        return "redirect:/usuarios/";
+    }
+
+    //REGISTRARSE, USUARIOS GENÉRICOS
+        @GetMapping("/registro")
+    public String mostrarFormularioRegistro(Model model) {
+        model.addAttribute("usuario", new Usuario());
+        return "usuario/registroFormView";
+    }
+
+    @PostMapping("/registro/submit")
+    public String procesarFormularioRegistro(@ModelAttribute("usuario") Usuario usuario) {
+
+        // Asignamos el rol USER y lo activamos
+        usuario.setRol(Rol.USER);
+
+        usuarioService.add(usuario);
+
+        return "redirect:/public/signin/";
     }
 
     // EDITAR USUARIO
-    @GetMapping("/usuarios/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String getEdit(
             @PathVariable long id,
             @RequestParam(required = false) Integer err,
@@ -84,32 +106,66 @@ public class UsuarioController {
         }
 
         Usuario usuarioAEditar = usuarioService.getOneById(id);
-        model.addAttribute("lusuarioForm", usuarioAEditar);
+        model.addAttribute("usuarioForm", usuarioAEditar);
         return "usuario/usuarioEditFormView";
     }
-
-    @PostMapping("/usuarios/edit/submit")
+    
+    @PostMapping("/edit/submit")
     public String getEditSubmit(
             @Valid Usuario usuarioForm,
             BindingResult bindingResult,
-            
+
             Model model) {
 
-        // Para los errores que llegan por el @Valid
         if (bindingResult.hasErrors()) {
-            return "redirect:/usuarios/edit/submit?err=1";
+            model.addAttribute("text2Err", "Hubo un error en los datos actualizados");
+            return "usuario/usuarioEditFormView";
         }
-        usuarioService.editUser(usuarioForm);   
-        return "redirect:/usuarios";
-    }
-
-    // BORRAR USUARIO
-    @GetMapping("/usuarios/delete/{id}")
-    public String showDelete(@PathVariable Long id) {
-        usuarioService.deleteById(id);
-        return "redirect:/usuarios";
+        usuarioService.editar(usuarioForm);
+        return "redirect:/usuarios/";
     }
 
     
+    // EDITAR USUARIO PASSWORD
+    @GetMapping("/edit/pass/{id}")
+    public String getEditPass(
+            @PathVariable long id,
+            @RequestParam(required = false) Integer err,
+            Model model) {
+
+        // Para los errores genéricos que llegan por el @Valid
+        // Como el formato del email o los campos vacíos.
+        if (err != null) {
+            model.addAttribute("text2Err", "Hubo un error en los datos actualizados");
+        }
+
+        Usuario usuarioAEditar = usuarioService.getOneById(id);
+        model.addAttribute("usuarioForm", usuarioAEditar);
+        return "usuario/usuarioEditPassView";
+    }
+    
+    @PostMapping("/edit/pass/submit")
+    public String getEditPassSubmit(
+            @Valid Usuario usuarioForm,
+            BindingResult bindingResult,
+
+            Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("text2Err", "Hubo un error en los datos actualizados");
+            return "usuario/usuarioEditFormView";
+        }
+        usuarioService.editar(usuarioForm);
+        return "redirect:/usuarios/";
+    }
+
+    // BORRAR USUARIO
+    @GetMapping("/delete/{id}")
+    public String showDelete(@PathVariable Long id) {
+        usuarioService.deleteById(id);
+        return "redirect:/usuarios/";
+    }
+
+
 
 }

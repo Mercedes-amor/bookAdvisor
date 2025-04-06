@@ -50,7 +50,7 @@
           </table>
 
           <!-- Botón para añadir un nuevo usuario -->
-          <div class="text-center mt-4">
+          <div sec:authorize="hasRole('ADMIN')" class="text-center mt-4">
             <a href="/usuarios/addUser" class="btn btn-primary btn-lg"
               >Añadir Usuario</a
             >

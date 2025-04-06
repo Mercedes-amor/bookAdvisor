@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+  <!-- Header con fragmentación -->
+  <head th:insert="~{fragments/header :: header}"></head>
+  <!-- Menu con fragmentación -->
+  <!-- <head th:insert="~{fragments/header :: menu}"></head> -->
+</head>
+
+<body class="card-body">
+<h2>¿Estás seguro de que quieres desconectarte?</h2>
+<form th:action="@{/logout}" method="post"><input type="submit" value="Logout"/>
+</form>
+</body>
+</br>
+</br>
+<a th:href="@{/}" class="btn btn-secondary ms-2">Volver Inicio</a>
+</html>

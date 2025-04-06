@@ -12,15 +12,20 @@
       <main>
         <article>
           <div class="formContainer">
-            <h2 class="titulo" id="centrado">Nuevo Usuario</h2>
+            <h2 class="titulo" id="centrado">Editar Usuario</h2>
 
             <form
               method="post"
-              th:action="@{/usuarios/addUser/submit}"
-              th:object="${usuario}"
+              th:action="@{/usuarios/edit/submit}"
+              th:object="${usuarioForm}"
               enctype="multipart/form-data"
               class="card p-4 shadow"
             >
+               <!-- Id -->
+              <div class="mb-3">
+             <label for="id" class="form-label">Id:</label>
+             <input type="hidden" id="id" th:field="*{id}" />
+             </div>
               <!-- Nombre -->
               <div class="divForm">
                 <label for="nombre" class="form-label">Nombre:</label>
@@ -33,9 +38,9 @@
               </div>
               <!-- Password -->
               <div class="divForm">
-                <label for="password" class="form-label">Password:</label>
+                <!-- <label for="password" class="form-label">Password:</label> -->
                 <input
-                  type="password"
+                type="hidden"
                   id="password"
                   th:field="*{password}"
                   class="form-control"

@@ -3,6 +3,8 @@ package mag.ej05.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import mag.ej05.domain.Usuario;
@@ -19,11 +21,49 @@ public class UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-    //Método añadir
-    public void add(Usuario usuario) {
+    // Buscar por nombre
+    public Usuario findByNombre(String nombre) {
+        return usuarioRepository.findByNombre(nombre);
+    }
 
-        usuarioRepository.save(usuario);
+    // Buscar por id
+    public Usuario getOneById(Long id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+
+    // Obtener todos
+    public List<Usuario> getAll() {
+        return usuarioRepository.findAll();
+    }
+
+    // Método añadir
+    public Usuario add(Usuario usuario) {
+        // Primero encriptamos la contraseña
+        String passCrypted = passwordEncoder.encode(usuario.getPassword());
+        usuario.setPassword(passCrypted);
+        try {
+            // Si el nombre está duplicado fallaría el guardado, por eso lo metemos en
+            // un try-catch
+            return usuarioRepository.save(usuario);
+
+        } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Usuario editar(Usuario usuario) {
+        // Obtenemos el usuario a editar
+        Usuario userAEditar = usuarioRepository.findById(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrada"));
+        // Encriptamos la contraseña
+        String passCrypted = passwordEncoder.encode(usuario.getPassword());
+        userAEditar.setPassword(passCrypted);
+        return usuarioRepository.save(userAEditar);
     }
 
     // Método eliminar
@@ -41,27 +81,4 @@ public class UsuarioService {
 
     }
 
-    // Método obtener un usuario
-    public Usuario getOneById(Long id) {
-
-         return usuarioRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-    }
-
-    // Método obtener todos
-    public List<Usuario> getAll() {
-        return usuarioRepository.findAll();
-    }
-
-    // Método actualizar usuario
-    public Usuario editUser(Usuario usuario) {
-        // Obtenemos el libro a modificar dentro del repositorio
-        Usuario usuarioAEditar = usuarioRepository.findById(usuario.getId())
-        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-             
-        return usuarioRepository.save(usuarioAEditar);
-    }
-
-    
 }

@@ -125,7 +125,9 @@
           </div>
           <!-- Botón para añadir un nuevo Género -->
           <div class="text-center mt-4">
-            <a href="/libros/addGenero" class="btn btn-primary btn-lg"
+            <a
+            sec:authorize="isAuthenticated()" 
+            href="/libros/addGenero" class="btn btn-primary btn-lg"
               >Añadir Género nuevo</a
             >
           </div>

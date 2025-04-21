@@ -22,6 +22,7 @@ import mag.ej05.domain.Genero;
 import mag.ej05.domain.Libro;
 import mag.ej05.domain.Usuario;
 import mag.ej05.domain.Valoracion;
+import mag.ej05.repositories.GeneroRepository;
 import mag.ej05.services.FileStorageService;
 import mag.ej05.services.LibrosService;
 import mag.ej05.services.UsuarioService;
@@ -30,6 +31,8 @@ import mag.ej05.services.ValoracionService;
 @Controller
 @RequestMapping("/libros")
 public class LibroController {
+
+    private final GeneroRepository generoRepository;
 
     // Variable para almacenar errores
     String txtErr = null;
@@ -46,6 +49,10 @@ public class LibroController {
 
     @Autowired(required = true)
     ValoracionService valoracionService;
+
+    LibroController(GeneroRepository generoRepository) {
+        this.generoRepository = generoRepository;
+    }
 
     // CATÁLOGO LIBROS
 
@@ -142,27 +149,7 @@ public class LibroController {
         return "libro/bookEditFormView";
     }
 
-    @PostMapping("/addGenero/submit")
-    public String showNewGeneroSubmit(
-            @Valid Genero genero,
-            BindingResult bindingResult,
-            Model model) {
-        // Para los errores que llegan por el @Valid
-        if (bindingResult.hasErrors()) {
-            txtErr = "No has completado todos los campos";
-            return "redirect:/libros/addGenero";
-        }
-
-        try {
-            librosService.addGenero(genero);
-        } catch (RuntimeException e) {
-            // Capturamos las excepciones que llegan del service
-            txtErr = e.getMessage();
-            return "redirect:/libros/addGenero";
-        }
-
-        return "redirect:/libros/";
-    }
+ 
 
     @PostMapping("/edit/submit")
     public String getEditSubmit(
@@ -218,6 +205,30 @@ public class LibroController {
         txtErr = null; // Reseteamos variable
         return "libro/generoNewFormView";
     }
+
+    @PostMapping("/addGenero/submit")
+    public String showNewGeneroSubmit(
+            @Valid Genero genero,
+            BindingResult bindingResult,
+            Model model) {
+        // Para los errores que llegan por el @Valid
+        if (bindingResult.hasErrors()) {
+            txtErr = "No has completado todos los campos";
+            return "redirect:/libros/addGenero";
+        }
+
+        try {
+            librosService.addGenero(genero);
+        } catch (RuntimeException e) {
+            // Capturamos las excepciones que llegan del service
+            txtErr = e.getMessage();
+            return "redirect:/libros/addGenero";
+        }
+
+        return "redirect:/libros/";
+    }
+
+
 
     // MÉTODO PASAR IMÁGENES
     @GetMapping("/files/{filename:.+}")

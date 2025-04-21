@@ -40,12 +40,11 @@ public class SecurityConfig {
 
                 http.authorizeHttpRequests(
                                 auth -> auth
-
                                                 // Permitir el acceso a recursos css
                                                 .requestMatchers(
-                                                        "/css/**", "/js/**", "/images/**", "/public/**", "/webjars/**"
-                                                    ).permitAll()
-                                                   
+                                                                "/css/**", "/js/**", "/images/**",
+                                                                "/public/**", "/webjars/**").permitAll()
+                                                .requestMatchers("/api/**", "/api/genre").permitAll()
 
                                                 // Acesso a la consola h2 a todos
                                                 .requestMatchers("/h2-console/**").permitAll()
@@ -82,7 +81,8 @@ public class SecurityConfig {
                                 // .logout(logout -> logout
                                 // .permitAll())
                                 .formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer
-                                                .loginPage("/public/signin").permitAll() // mapping par mostrar formulario de login
+                                                .loginPage("/public/signin").permitAll() // mapping par mostrar
+                                                                                         // formulario de login
                                                 .loginProcessingUrl("/login").permitAll() // ruta post de /signin
                                                 .failureUrl("/public/signin?error") // vuelve a signin con mensaje de
                                                                                     // error

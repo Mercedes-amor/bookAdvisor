@@ -1,4 +1,4 @@
-package mag.ej05.config;
+package mag.ej05.security;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -40,11 +40,19 @@ public class SecurityConfig {
 
                 http.authorizeHttpRequests(
                                 auth -> auth
+                                //Permiso a todos de prueba
+                                .requestMatchers("/**").permitAll()
+
                                                 // Permitir el acceso a recursos css
-                                                .requestMatchers(
-                                                                "/css/**", "/js/**", "/images/**",
-                                                                "/public/**", "/webjars/**").permitAll()
+                                                .requestMatchers("/css/**", "/js/**", "/images/**",
+                                                                "/public/**", "/webjars/**")
+                                                .permitAll()
+                                                .requestMatchers("/h2-console").permitAll()
                                                 .requestMatchers("/api/**", "/api/genre").permitAll()
+                                                // Rutas Swagger
+                                                .requestMatchers("/swagger-ui/**",
+                                                                "/swagger-ui.html",
+                                                                "/v3/api-docs/**").permitAll()
 
                                                 // Acesso a la consola h2 a todos
                                                 .requestMatchers("/h2-console/**").permitAll()
